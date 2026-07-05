@@ -81,6 +81,7 @@
   .form-card { background: #fff; border: 1px solid #e9e9e9; border-radius: 16px; padding: 2rem; }
   .field-group { display: grid; gap: 12px; margin-bottom: 12px; }
   .field-group.two-col { grid-template-columns: 1fr 1fr; }
+  .field-group.three-col { grid-template-columns: 1fr 1fr 1fr; }
   .field-wrap { display: flex; flex-direction: column; gap: 5px; }
   label { font-size: 13px; color: #454545; font-weight: 500; }
   input, select, textarea { font-size: 14px; width: 100%; padding: 10px 12px; border: 1px solid #d9d9d9; border-radius: 8px; background: #fff; color: #141414; outline: none; font-family: inherit; }
@@ -113,7 +114,7 @@
 
   @media (max-width: 720px) {
     .steps, .why-grid, .listing-grid { grid-template-columns: 1fr; }
-    .field-group.two-col { grid-template-columns: 1fr; }
+    .field-group.two-col, .field-group.three-col { grid-template-columns: 1fr; }
     .footer-inner { flex-direction: column; }
   }
 
@@ -344,26 +345,6 @@
   </div>
 </section>
 
-<!-- INSIDER LIST -->
-<section class="insider-section" id="insider-list">
-  <div class="narrow">
-    <div class="section-label">Not Ready Yet?</div>
-    <h2>Join the Restaurant Insider List</h2>
-    <p class="section-sub">Free. Get early alerts on off-market and turnkey restaurant spaces across DFW — before they're public. No obligation, unsubscribe anytime.</p>
-    <div class="form-card">
-      <div class="field-group two-col">
-        <div class="field-wrap"><label for="i-name">Name</label><input type="text" id="i-name" placeholder="Full name" /></div>
-        <div class="field-wrap"><label for="i-email">Email <span class="required">*</span></label><input type="email" id="i-email" placeholder="email@example.com" /></div>
-      </div>
-      <div class="form-submit-row">
-        <button class="btn-secondary insider-submit-btn" id="insider-submit-btn" onclick="submitInsider()">Join the Insider List</button>
-      </div>
-      <div class="success-msg" id="insider-success-msg">You're on the list — watch your inbox for new opportunities.</div>
-      <div class="error-msg" id="insider-error-msg"><span id="insider-error-text">Something went wrong. Please try again.</span></div>
-    </div>
-  </div>
-</section>
-
 <!-- FORM -->
 <section class="form-section" id="get-started">
   <div class="narrow">
@@ -438,6 +419,26 @@
       <div class="success-msg" id="success-msg">Thanks — Sonny will reach out shortly.</div>
       <div class="error-msg" id="error-msg"><span id="error-text">Something went wrong. Please try again, or call/text 929-399-7368.</span></div>
       <p class="form-fine-print">Submitting this form does not obligate you to anything. Our fee is paid by the landlord. We personally follow up within 1 business day.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INSIDER LIST -->
+<section class="insider-section" id="insider-list">
+  <div class="narrow">
+    <h2>Join the Restaurant Insider List</h2>
+    <p class="section-sub">Free. Get early alerts on off-market and turnkey restaurant spaces across DFW — before they're public. No obligation, unsubscribe anytime.</p>
+    <div class="form-card">
+      <div class="field-group three-col">
+        <div class="field-wrap"><label for="i-name">Name</label><input type="text" id="i-name" placeholder="Full name" /></div>
+        <div class="field-wrap"><label for="i-email">Email <span class="required">*</span></label><input type="email" id="i-email" placeholder="email@example.com" /></div>
+        <div class="field-wrap"><label for="i-phone">Phone</label><input type="tel" id="i-phone" placeholder="(xxx) xxx-xxxx" /></div>
+      </div>
+      <div class="form-submit-row">
+        <button class="btn-secondary insider-submit-btn" id="insider-submit-btn" onclick="submitInsider()">Join the Insider List</button>
+      </div>
+      <div class="success-msg" id="insider-success-msg">You're on the list — watch your inbox for new opportunities.</div>
+      <div class="error-msg" id="insider-error-msg"><span id="insider-error-text">Something went wrong. Please try again.</span></div>
     </div>
   </div>
 </section>
@@ -536,6 +537,7 @@
 
 <script>
 const WEBHOOK = 'https://script.google.com/macros/s/AKfycbzFJEEHp505LJyryzgasE1IGHnRpDvl3epAB9hjqf6-aDlemKF15u3mqw14umydxjNFSg/exec';
+const WEBHOOK_INSIDER = 'https://script.google.com/macros/s/AKfycbyhW_VbPbexarPgr0XRq4QdVU2eBl9a96YszQ7SMoZNe9zZthIBpfsaiwCU3dxqHviVuQ/exec';
 
 function g(id) { return document.getElementById(id).value.trim(); }
 
@@ -598,6 +600,7 @@ async function submitForm() {
 async function submitInsider() {
   const name = g('i-name');
   const email = g('i-email');
+  const phone = g('i-phone');
   if (!email) {
     document.getElementById('insider-error-text').textContent = 'Email is required.';
     document.getElementById('insider-error-msg').style.display = 'block';
@@ -612,7 +615,7 @@ async function submitInsider() {
 
   const payload = {
     name:            name,
-    phone:           '',
+    phone:           phone,
     email:           email,
     website:         '',
     source:          'Website — Insider List',
@@ -632,7 +635,7 @@ async function submitInsider() {
   };
 
   try {
-    await fetch(WEBHOOK, {
+    await fetch(WEBHOOK_INSIDER, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
@@ -641,6 +644,7 @@ async function submitInsider() {
     document.getElementById('insider-success-msg').style.display = 'block';
     document.getElementById('i-name').value = '';
     document.getElementById('i-email').value = '';
+    document.getElementById('i-phone').value = '';
   } catch (err) {
     document.getElementById('insider-error-text').textContent = 'Could not submit. Please try again.';
     document.getElementById('insider-error-msg').style.display = 'block';
