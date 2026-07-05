@@ -18,16 +18,9 @@
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
   .narrow { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
 
-  /* NAV */
-  .nav { position: sticky; top: 0; z-index: 50; background: #141414; border-bottom: 1px solid #292929; }
-  .nav-inner { max-width: 1080px; margin: 0 auto; padding: 16px 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-  .brand { font-family: 'Libre Baskerville', Georgia, serif; font-weight: 700; font-size: 17px; letter-spacing: 0.01em; color: #fff; }
-  .brand span { color: #ffffff; }
-  .nav-cta { background: transparent; color: #fff; border: 1.5px solid #fff; padding: 9px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-  .nav-cta:hover { background: #fff; color: #141414; }
-
   /* HERO */
-  .hero { padding: 5rem 0 3.5rem; text-align: center; background: #f5f5f5; }
+  .hero { padding: 3rem 0 3.5rem; text-align: center; background: #f5f5f5; }
+  .hero-brand { font-family: 'Libre Baskerville', Georgia, serif; font-weight: 700; font-size: 16px; letter-spacing: 0.01em; color: #141414; margin-bottom: 1.5rem; }
   .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #141414; background: #ffffff; border: 1px solid #d9d9d9; padding: 6px 14px; border-radius: 100px; margin-bottom: 1.5rem; }
   .hero h1 { font-size: clamp(28px, 4.5vw, 46px); font-weight: 700; line-height: 1.2; letter-spacing: -0.005em; max-width: 800px; margin: 0 auto 1.25rem; }
   .hero p.sub { font-size: 17px; color: #454545; max-width: 560px; margin: 0 auto 2rem; }
@@ -120,21 +113,24 @@
     .field-group.two-col { grid-template-columns: 1fr; }
     .footer-inner { flex-direction: column; }
   }
+
+  /* MESSENGER CHAT BUBBLE */
+  .fb-chat-bubble { position: fixed; bottom: 22px; right: 22px; z-index: 100; display: flex; align-items: center; gap: 10px; background: #141414; color: #fff; text-decoration: none; padding: 12px 20px 12px 14px; border-radius: 100px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 14px; font-weight: 600; transition: transform 0.15s ease, background 0.15s ease; }
+  .fb-chat-bubble:hover { background: #292929; transform: translateY(-2px); }
+  .fb-chat-bubble svg { width: 24px; height: 24px; flex-shrink: 0; }
+  .fb-chat-label { white-space: nowrap; }
+  @media (max-width: 520px) {
+    .fb-chat-bubble { bottom: 16px; right: 16px; padding: 12px; }
+    .fb-chat-label { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-inner">
-    <div class="brand">Stonewood <span>Restaurant Division</span></div>
-    <a class="nav-cta" href="#get-started">Find My Space</a>
-  </div>
-</div>
-
 <!-- HERO -->
 <div class="hero">
   <div class="narrow">
+    <div class="hero-brand">Stonewood <span>Restaurant Division</span></div>
     <span class="eyebrow">Restaurant Tenant Rep · DFW</span>
     <h1>Find Your Next Restaurant Space — Zero Cost to You</h1>
     <p class="sub">We represent restaurant operators, not landlords. We find the right 2nd generation space, negotiate the lease, and connect you with capital if you need it. Our fee is paid by the landlord — you pay nothing.</p>
@@ -375,6 +371,15 @@
   </div>
 </footer>
 
+<!-- MESSENGER CHAT BUBBLE -->
+<a class="fb-chat-bubble" href="https://m.me/568784293145672" target="_blank" rel="noopener" aria-label="Chat with us on Messenger">
+  <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 0C8.059 0 0 7.485 0 16.714c0 5.256 2.606 9.947 6.68 13.007V36l6.101-3.349c1.63.45 3.36.692 5.219.692 9.941 0 18-7.485 18-16.714C36 7.485 27.941 0 18 0z" fill="#ffffff"/>
+    <path d="M9.6 21.086l4.95-5.247 5.13 4.106 5.63-5.247-5.775 8.72-5.13-4.106-5.63 5.247 0.825 1.527z" fill="#141414"/>
+  </svg>
+  <span class="fb-chat-label">Chat on Messenger</span>
+</a>
+
 <script>
 const WEBHOOK = 'https://script.google.com/macros/s/AKfycbzFJEEHp505LJyryzgasE1IGHnRpDvl3epAB9hjqf6-aDlemKF15u3mqw14umydxjNFSg/exec';
 
@@ -393,28 +398,4 @@ async function submitForm() {
   btn.textContent = 'Submitting...';
   btn.disabled = true;
   document.getElementById('success-msg').style.display = 'none';
-  document.getElementById('error-msg').style.display = 'none';
-
-  const payload = {
-    name:            name,
-    phone:           phone,
-    email:           g('f-email'),
-    website:         '',
-    source:          'Website — Landing Page',
-    concept:         g('f-concept'),
-    locations:       '',
-    budget:          g('f-budget'),
-    sqft:            g('f-sqft'),
-    timeline:        g('f-timeline'),
-    markets:         g('f-markets'),
-    operatorProfile: g('f-operator-profile'),
-    agent:           g('f-agent'),
-    capital:         g('f-capital'),
-    capitalAmount:   '',
-    status:          'New Lead',
-    priority:        '',
-    notes:           g('f-notes'),
-  };
-
-  try {
-    await
+  document.getE
