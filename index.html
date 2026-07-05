@@ -126,6 +126,42 @@
     .fb-chat-bubble { bottom: 16px; right: 16px; padding: 12px; }
     .fb-chat-label { display: none; }
   }
+
+  /* WEBSITE AI CHAT WIDGET */
+  .chat-bubble-btn { position: fixed; bottom: 22px; right: 22px; z-index: 101; display: flex; align-items: center; gap: 10px; background: #141414; color: #fff; border: none; text-decoration: none; padding: 14px 20px 14px 16px; border-radius: 100px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease; }
+  .chat-bubble-btn:hover { background: #292929; transform: translateY(-2px); }
+  .chat-bubble-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .chat-bubble-label { white-space: nowrap; }
+  .chat-panel { position: fixed; bottom: 90px; right: 22px; z-index: 101; width: 360px; max-width: calc(100vw - 32px); height: 480px; max-height: calc(100vh - 140px); background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.22); display: none; flex-direction: column; overflow: hidden; border: 1px solid #e9e9e9; }
+  .chat-panel.open { display: flex; }
+  .chat-panel-header { background: #141414; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .chat-panel-title { font-size: 14px; font-weight: 700; font-family: 'Figtree', sans-serif; }
+  .chat-panel-sub { font-size: 12px; color: #b3b3b3; margin-top: 2px; }
+  .chat-panel-close { background: none; border: none; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
+  .chat-msg { max-width: 82%; padding: 10px 13px; border-radius: 14px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; }
+  .chat-msg.bot { background: #fff; border: 1px solid #e9e9e9; color: #141414; align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-msg.user { background: #141414; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-msg.system { background: transparent; color: #999; align-self: center; font-size: 12px; text-align: center; max-width: 100%; }
+  .chat-typing { display: flex; gap: 4px; align-self: flex-start; padding: 10px 13px; }
+  .chat-typing span { width: 6px; height: 6px; background: #b3b3b3; border-radius: 50%; animation: chatTypingBounce 1.2s infinite ease-in-out; }
+  .chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+  .chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes chatTypingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .chat-input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #e9e9e9; background: #fff; }
+  .chat-input-row input { flex: 1; font-size: 14px; padding: 10px 12px; border: 1px solid #d9d9d9; border-radius: 100px; outline: none; font-family: inherit; }
+  .chat-input-row input:focus { border-color: #141414; }
+  .chat-send-btn { background: #141414; border: none; border-radius: 50%; width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .chat-send-btn:hover { background: #292929; }
+  .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .chat-send-btn svg { width: 16px; height: 16px; }
+  .chat-panel-footer { text-align: center; font-size: 11px; color: #999; padding: 8px 12px 10px; border-top: 1px solid #f0f0f0; }
+  .chat-panel-footer a { color: #454545; font-weight: 600; }
+  @media (max-width: 520px) {
+    .chat-bubble-btn { bottom: 16px; right: 16px; padding: 12px; }
+    .chat-bubble-label { display: none; }
+    .chat-panel { bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+  }
 </style>
 <script type="application/ld+json">
 {
@@ -467,14 +503,36 @@
   </div>
 </footer>
 
-<!-- MESSENGER CHAT BUBBLE -->
-<a class="fb-chat-bubble" href="https://m.me/568784293145672" target="_blank" rel="noopener" aria-label="Chat with us on Messenger">
-  <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18 0C8.059 0 0 7.485 0 16.714c0 5.256 2.606 9.947 6.68 13.007V36l6.101-3.349c1.63.45 3.36.692 5.219.692 9.941 0 18-7.485 18-16.714C36 7.485 27.941 0 18 0z" fill="#ffffff"/>
-    <path d="M9.6 21.086l4.95-5.247 5.13 4.106 5.63-5.247-5.775 8.72-5.13-4.106-5.63 5.247 0.825 1.527z" fill="#141414"/>
-  </svg>
-  <span class="fb-chat-label">Questions? Chat with us</span>
-</a>
+<!-- WEBSITE AI CHAT WIDGET -->
+<div id="sw-chat-widget">
+  <button id="sw-chat-toggle" class="chat-bubble-btn" aria-label="Chat with us">
+    <svg class="chat-icon-open" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="#ffffff"/>
+    </svg>
+    <svg class="chat-icon-close" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+      <path d="M6 6l12 12M18 6L6 18" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <span class="chat-bubble-label">Questions? Chat with us</span>
+  </button>
+
+  <div id="sw-chat-panel" class="chat-panel">
+    <div class="chat-panel-header">
+      <div>
+        <div class="chat-panel-title">Stonewood Leasing Assistant</div>
+        <div class="chat-panel-sub">Usually replies in a few seconds</div>
+      </div>
+      <button id="sw-chat-close" class="chat-panel-close" aria-label="Close chat">&times;</button>
+    </div>
+    <div id="sw-chat-messages" class="chat-messages"></div>
+    <div class="chat-input-row">
+      <input id="sw-chat-input" type="text" placeholder="Type a message..." maxlength="500" />
+      <button id="sw-chat-send" class="chat-send-btn" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 11l18-8-8 18-2-8-8-2z" fill="#ffffff"/></svg>
+      </button>
+    </div>
+    <div class="chat-panel-footer">Prefer Facebook? <a href="https://m.me/568784293145672" target="_blank" rel="noopener">Message us on Messenger</a></div>
+  </div>
+</div>
 
 <script>
 const WEBHOOK = 'https://script.google.com/macros/s/AKfycbzFJEEHp505LJyryzgasE1IGHnRpDvl3epAB9hjqf6-aDlemKF15u3mqw14umydxjNFSg/exec';
@@ -590,6 +648,143 @@ async function submitInsider() {
   btn.textContent = 'Join the Insider List';
   btn.disabled = false;
 }
+
+// ─── Website AI Chat Widget ───────────────────────────────────────────────
+(function () {
+  const CHAT_API = 'https://stonewood-messenger-agent.onrender.com/api/website-chat';
+  const SESSION_KEY = 'sw_chat_session_id';
+  const HISTORY_KEY = 'sw_chat_transcript';
+
+  function getSessionId() {
+    try {
+      let id = localStorage.getItem(SESSION_KEY);
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('sess-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+        localStorage.setItem(SESSION_KEY, id);
+      }
+      return id;
+    } catch (e) {
+      return 'sess-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    }
+  }
+
+  function loadTranscript() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveTranscript(list) {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(-60))); } catch (e) {}
+  }
+
+  const sessionId = getSessionId();
+  let transcript = loadTranscript();
+
+  const panel = document.getElementById('sw-chat-panel');
+  const toggleBtn = document.getElementById('sw-chat-toggle');
+  const closeBtn = document.getElementById('sw-chat-close');
+  const messagesEl = document.getElementById('sw-chat-messages');
+  const inputEl = document.getElementById('sw-chat-input');
+  const sendBtn = document.getElementById('sw-chat-send');
+  const iconOpen = toggleBtn.querySelector('.chat-icon-open');
+  const iconClose = toggleBtn.querySelector('.chat-icon-close');
+
+  function renderMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function renderAll() {
+    messagesEl.innerHTML = '';
+    if (transcript.length === 0) {
+      renderMessage('system', "Ask about available spaces, budget fit, or how leasing works — I'll help you find the right restaurant space in DFW.");
+    } else {
+      transcript.forEach(function (m) { renderMessage(m.role, m.text); });
+    }
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'chat-typing';
+    div.id = 'sw-chat-typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function hideTyping() {
+    const el = document.getElementById('sw-chat-typing');
+    if (el) el.remove();
+  }
+
+  function openPanel() {
+    panel.classList.add('open');
+    iconOpen.style.display = 'none';
+    iconClose.style.display = 'block';
+    if (messagesEl.children.length === 0) renderAll();
+    inputEl.focus();
+  }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    iconOpen.style.display = 'block';
+    iconClose.style.display = 'none';
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    if (panel.classList.contains('open')) closePanel(); else openPanel();
+  });
+  closeBtn.addEventListener('click', closePanel);
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    inputEl.value = '';
+    sendBtn.disabled = true;
+
+    transcript.push({ role: 'user', text: text });
+    saveTranscript(transcript);
+    renderMessage('user', text);
+    showTyping();
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(function () { controller.abort(); }, 45000);
+      const res = await fetch(CHAT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: sessionId, message: text }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      hideTyping();
+
+      if (!res.ok) throw new Error('Bad response: ' + res.status);
+      const data = await res.json();
+      const reply = data.reply || "Sorry, I didn't catch that — could you try again?";
+      transcript.push({ role: 'bot', text: reply });
+      saveTranscript(transcript);
+      renderMessage('bot', reply);
+    } catch (err) {
+      hideTyping();
+      renderMessage('bot', "Sorry, I'm having trouble connecting right now. Please call/text 929-399-7368 or email info@stonewoodintl.com.");
+    }
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  inputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') sendMessage();
+  });
+})();
 </script>
 </body>
 </html>
